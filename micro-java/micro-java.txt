@@ -1,0 +1,865 @@
+  
+  388  oc get pod 
+  389  oc describe pod mysql-1-gk9gx 
+  390  oc get svc
+  391  oc describe service mysql
+  392  oc get pvc
+  393  oc get svc/mysql
+  394  oc get pvc/mysql
+  395  oc port-forward mysql-1-adbzrx 3306:3306
+  396  oc describe  pvc/mysql
+  397  oc port-forward mysql-1-gk9gx 3306:3306
+  398  oc delete project ${RHT_OCP4_DEV_USER}-mysql-openshift
+  399  lab openshift-resources finish
+  400  mysql -uuser1 -pmypa55 --protocol tcp -h localhost
+  401  source /usr/local/etc/ocp4.config
+  402  oc login -u ${RHT_OCP4_DEV_USER} -p ${RHT_OCP4_DEV_PASSWORD} ${RHT_OCP4_MASTER_API}
+  403  oc new-project ${RHT_OCP4_DEV_USER}-route
+  404  source /usr/local/etc/ocp4.config
+  405  oc login -u ${RHT_OCP4_DEV_USER} -p ${RHT_OCP4_DEV_PASSWORD} ${RHT_OCP4_MASTER_API}
+  406  oc new-project ${RHT_OCP4_DEV_USER}-route
+  407  oc new-app --docker-image=quay.io/redhattraining/php-hello-dockerfile \--name php-helloworld
+  408  oc get pod -w
+  409  oc logs -f php-helloworld-74bb86f6cb-mc5ws
+  410  oc describe svc/php-helloworld
+  411  oc expose svc/php-helloworld
+  412  oc describe route
+  413  curl php-helloworld-${RHT_OCP4_DEV_USER}-route.${RHT_OCP4_WILDCARD_DOMAIN}
+  414  curl 
+  415  curl php-helloworld-adbzrx-route.apps.na46.prod.nextcle.com
+  416  oc delete route/php-helloworld
+  417  oc expose svc/php-helloworld --name=${RHT_OCP4_DEV_USER}-xyz
+  418  oc expose svc/php-helloworld --name=${RHT_OCP4_DEV_USER}-2
+  419  oc expose svc/php-helloworld --name=test-2
+  420  oc describe route
+  421  curl 
+  422  curl test-2-route.apps.na46.prod.nextcle.com
+  423  oc describe route
+  424  curl test-2-adbzrx-route.apps.na46.prod.nextcle.com
+  425  lab openshift-routes finish
+  426  lab openshift-s2i start
+  427  cd DO180-apps
+  428  git checkout master
+  429  git checkout -b s2i
+  430  git push -u origin s2i
+  431  source /usr/local/etc/ocp4.config
+  432  oc login -u ${RHT_OCP4_DEV_USER} -p ${RHT_OCP4_DEV_PASSWORD} ${RHT_OCP4_MASTER_API}
+  433  oc new-project ${RHT_OCP4_DEV_USER}-s2i
+  434  oc new-app php:7.3 --name=php-helloworld https://github.com/${RHT_OCP4_GITHUB_USER}/DO180-apps#s2i --context-dir php-helloworld
+  435  oc get pods
+  436  oc logs --all-containers -f php-helloworld-1-build
+  437  oc describe deployment/php-helloworld
+  438  oc expose service php-helloworld --name ${RHT_OCP4_DEV_USER}-helloworld
+  439  source /usr/local/etc/ocp4.config
+  440  oc expose service php-helloworld --name ${RHT_OCP4_DEV_USER}-helloworld
+  441  oc get route -o jsonpath='{..spec.host}{"\n"}'
+  442  curl -s ${RHT_OCP4_DEV_USER}-helloworld-${RHT_OCP4_DEV_USER}-s2i.${RHT_OCP4_WILDCARD_DOMAIN}
+  443  git add
+  444  cd ~/DO180-apps/php-helloworld
+  445  git add .
+  446  git commit -m 'Changed index page contents.'
+  447  git push origin s2i
+  448  git commit -m 'Changed index page contents.'
+  449  git push origin s2i
+  450  ls
+  451  cat index.php 
+  452  vi index.php 
+  453  cat index.php 
+  454  git add .
+  455  git commit -m 'Changed index page contents2.'
+  456  git push origin s2i
+  457  oc start-build php-helloworld
+  458  oc logs php-helloworld-2-build -f
+  459  oc get pods
+  460  curl -s ${RHT_OCP4_DEV_USER}-helloworld-${RHT_OCP4_DEV_USER}-s2i.${RHT_OCP4_WILDCARD_DOMAIN}
+  461  oc get pods
+  462  oc get routs
+  463  oc get route
+  464  curl -s ${RHT_OCP4_DEV_USER}-helloworld-${RHT_OCP4_DEV_USER}-s2i.${RHT_OCP4_WILDCARD_DOMAIN}
+  465  oc get route
+  466  curl -s 
+  467  curl -s adbzrx-helloworld-adbzrx-s2i.apps.na46.prod.nextcle.com
+  468  lab openshift-s2i finish
+  469  echo 'source /usr/local/etc/ocp4.config' >> ~/.bashrc
+  470  source ~/.bashrc
+  471  grep RHT_OCP4_WILDCARD_DOMAIN /usr/local/etc/ocp4.config
+  472  oc login -u ${RHT_OCP4_DEV_USER} -p ${RHT_OCP4_DEV_PASSWORD} ${RHT_OCP4_MASTER_API}
+  473  oc get route -n openshift-console
+  474  lab deploy-image finish
+  475  oc whoami
+  476  oc whoami --show-console
+  477  lab build-template start
+  478  ls
+  479  git clone https://github.com/yourgituser/DO288-apps
+  480  git clone https://github.com/lilyjing2/DO288-apps
+  481  ls
+  482  lab build-template start
+  483  cd DO288-apps
+  484  ls
+  485  git checkout main
+  486  ls ~/DO288-apps/quotes
+  487  less ~/DO288-apps/quotes/get.php
+  488  source /usr/local/etc/ocp4.config
+  489  oc login -u ${RHT_OCP4_DEV_USER} -p ${RHT_OCP4_DEV_PASSWORD} ${RHT_OCP4_MASTER_API}
+  490  oc get templates -n openshift | grep php | grep mysql
+  491  oc new-project ${RHT_OCP4_DEV_USER}-common
+  492  oc create -f ~/DO288/labs/build-template/php-mysql-ephemeral.json
+  493  oc new-project ${RHT_OCP4_DEV_USER}-build-template
+  494  oc describe template php-mysql-ephemeral -n ${RHT_OCP4_DEV_USER}-common
+  495  cat ~/DO288/labs/build-template/create-app.sh
+  496  ~/DO288/labs/build-template/create-app.sh
+  497  oc logs -f bc/quotesapi
+  498  oc get pod
+  499  oc get route
+  500  oc describe svc quotesdb | grep Endpoints
+  501  oc rsh quotesapi-7d76ff58f8-6j2gx bash -c 'echo > /dev/tcp/$DATABASE_SERVICE_NAME/3306 && echo OK || echo FAIL'
+  502  oc rsh quotesapi-bf689bf5-wmsxm bash -c 'echo > /dev/tcp/$DATABASE_SERVICE_NAME/3306 && echo OK || echo FAIL'
+  503  oc log quotesapi-bf689bf5-wmsxm 
+  504  oc log quotesapi-bf689bf5-wmsxm
+  505  oc logs quotesapi-bf689bf5-wmsxm
+  506  oc cp ~/DO288/labs/build-template/quote.sql quotesdb-6b7ffcc649-dslpq:/tmp/quote.sql
+  507  oc cp ~/DO288/labs/build-template/quote.sql quotesdb-6b7ffcc649-5v9ch:/tmp/quote.sql
+  508  oc rsh quotesdb-6b7ffcc649-5v9ch
+  509  curl -si http://quote-$RHT_OCP4_DEV_USER.$RHT_OCP4_WILDCARD_DOMAIN/get.php
+  510  oc rsh quotesdb-6b7ffcc649-5v9ch
+  511  oc rsh quotesapi-bf689bf5-wmsxm
+  512  oc get pod
+  513  oc get -all
+  514  oc describe svc
+  515  oc whoami 
+  516  oc whoami --show-console
+  517  cd~
+  518  cd ~
+  519  lab container-build start
+  520  source /usr/local/etc/ocp4.config
+  521  cd DO288-apps
+  522  git checkout main
+  523  git push -u origin container-build
+  524  oc login -u ${RHT_OCP4_DEV_USER} -p ${RHT_OCP4_DEV_PASSWORD} ${RHT_OCP4_MASTER_API}
+  525  oc new-project ${RHT_OCP4_DEV_USER}-container-build
+  526  odman build --layers=false -t do288-apache ./container-build
+  527  podman build --layers=false -t do288-apache ./container-build
+  528  podman images
+  529  podman tag do288-apache quay.io/${RHT_OCP4_QUAY_USER}/do288-apache
+  530  podman login quay.io -u ${RHT_OCP4_QUAY_USER}
+  531  echo ${RHT_OCP4_QUAY_USER}
+  532  podman login quay.io -u ${RHT_OCP4_QUAY_USER}
+  533  podman push quay.io/${RHT_OCP4_QUAY_USER}/do288-apache
+  534  oc new-app --name hola quay.io/${RHT_OCP4_QUAY_USER}/do288-apache
+  535  oc get pods
+  536  oc logs hola-56f74656f8-h4987
+  537  oc delete all -l app=hola
+  538  ls
+  539  cd container-build/
+  540  git commit -a -m "Changed the Containerfile to enable running as a random uid on OpenShift"
+  541  git push
+  542  podman rmi -a --force
+  543  cd ..
+  544  podman build --layers=false -t do288-apache ./container-build
+  545  podman tag do288-apache quay.io/${RHT_OCP4_QUAY_USER}/do288-apache
+  546  podman push quay.io/${RHT_OCP4_QUAY_USER}/do288-apache
+  547  oc new-app --name hola quay.io/${RHT_OCP4_QUAY_USER}/do288-apache
+  548  oc get pods
+  549  oc expose --port='8080' svc/hola
+  550  oc get route
+  551  curl hola-adbzrx-container-build.apps.na46.prod.nextcle.com
+  552  curl -s hola-adbzrx-container-build.apps.na46.prod.nextcle.com
+  553  curl --help
+  554  curl -si hola-adbzrx-container-build.apps.na46.prod.nextcle.com
+  555  cd ~
+  556  lab app-config start
+  557  ls
+  558  history
+  559  git clone https://github.com/lilyjing2/DO288-apps
+  560  lab app-config start
+  561  cd DO288-apps
+  562  git checkout main
+  563  git checkout -b app-config
+  564  git push -u origin app-config
+  565  source /usr/local/etc/ocp4.config
+  566  oc login -u ${RHT_OCP4_DEV_USER} -p ${RHT_OCP4_DEV_PASSWORD} ${RHT_OCP4_MASTER_API}
+  567  oc new-app --name ${RHT_OCP4_QUAY_USER}-app-config
+  568  oc new-project --name ${RHT_OCP4_QUAY_USER}-app-config
+  569  oc new-project ${RHT_OCP4_QUAY_USER}-app-config
+  570  oc new-project ${RHT_OCP4_DEV_USER}-app-config
+  571  oc new-app --name myapp --build-env npm_config_registry=http://${RHT_OCP4_NEXUS_SERVER}/repository/nodejs nodejs:12~https://github.com/${RHT_OCP4_GITHUB_USER}/DO288-apps#app-config --context-dir app-config
+  572  oc logs -f bc/myapp
+  573  oc get pods
+  574  oc expose svc myapp
+  575  oc get route
+  576  curl http://myapp-${RHT_OCP4_DEV_USER}-app-config.${RHT_OCP4_WILDCARD_DOMAIN}
+  577  curl myapp-adbzrx-app-config.apps.na46.prod.nextcle.com
+  578  oc create configmap myappconf --from-literal APP_MSG="Test Message"
+  579  oc describe cm/myappconf
+  580  oc create secret generic myappfilesec --from-file /home/student/DO288-apps/app-config/myapp.sec
+  581  oc get secret/myappfilesec -o json
+  582  oc set env deployment/myapp --from configmap/myappconf
+  583  oc set volume deployment/myapp --add -t secret -m /opt/app-root/secure --name myappsec-vol --secret-name myappfilesec
+  584  oc status
+  585  oc get pods
+  586  oc rsh myapp-ddffbc7f9-ntsjq env | grep APP_MSG
+  587  oc rsh myapp-56d4ddb78b-vwhdh env | grep APP_MSG
+  588  curl http://myapp-${RHT_OCP4_DEV_USER}-app-config.${RHT_OCP4_WILDCARD_DOMAIN}
+  589  oc edit cm/myappconf
+  590  oc describe cm/myappconf
+  591  oc get pods
+  592  oc delete pod  myapp-56d4ddb78b-vwhdh
+  593  oc get pods
+  594  curl http://myapp-${RHT_OCP4_DEV_USER}-app-config.${RHT_OCP4_WILDCARD_DOMAIN}
+  595  ls ~/DO288/labs/external-registry/ubi-sleep
+  596  lab external-registry start
+  597  ls ~/DO288/labs/external-registry/ubi-sleep
+  598  source /usr/local/etc/ocp4.config
+  599  podman login -u ${RHT_OCP4_QUAY_USER} quay.io
+  600  skopeo copy oci:/home/student/DO288/labs/external-registry/ubi-sleep docker://quay.io/${RHT_OCP4_QUAY_USER}/ubi-sleep:1.0
+  601  podman search quay.io/ubi-sleep
+  602  skopeo inspect docker://quay.io/${RHT_OCP4_QUAY_USER}/ubi-sleep:1.0
+  603  podman run -d --name sleep quay.io/${RHT_OCP4_QUAY_USER}/ubi-sleep:1.0
+  604  podman ps
+  605  podman logs sleep
+  606  podman stop sleep
+  607  podman ps
+  608  podman rm sleep
+  609  oc login -u ${RHT_OCP4_DEV_USER} -p ${RHT_OCP4_DEV_PASSWORD} ${RHT_OCP4_MASTER_API}
+  610  oc new-project ${RHT_OCP4_DEV_USER}-external-registry
+  611  oc new-app --name sleep --docker-image quay.io/${RHT_OCP4_QUAY_USER}/ubi-sleep:1.0
+  612  oc create secret generic quayio --from-file .dockerconfigjson=${XDG_RUNTIME_DIR}/containers/auth.json --type kubernetes.io/dockerconfigjson
+  613  oc secrets link default quayio --for pull
+  614  oc new-app --name sleep --docker-image quay.io/${RHT_OCP4_QUAY_USER}/ubi-sleep:1.0
+  615  cd /run/user/
+  616  ls
+  617  cd 1000
+  618  ls
+  619  cd containers/
+  620  ls
+  621  cat auth.json
+  622  oc get pods
+  623  oc logs sleep-5685467f56-q46vg
+  624  oc delete project ${RHT_OCP4_DEV_USER}-external-registry
+  625  skopeo delete docker://quay.io/${RHT_OCP4_QUAY_USER}/ubi-sleep:1.0
+  626  lab expose-registry start
+  627  oc get route -n openshift-image-registry
+  628  INTERNAL_REGISTRY=$( oc get route default-route \
+  629  -n openshift-image-registry -o jsonpath='{.spec.host}' )
+  630  echo ${INTERNAL_REGISTRY}
+  631  cd ~
+  632  oc new-project ${RHT_OCP4_DEV_USER}-common2
+  633  TOKEN=$(oc whoami -t)
+  634  echo $(oc whoami -t)
+  635  ls ~/DO288/labs/expose-registry/ubi-info
+  636  skopeo copy --dest-creds=${RHT_OCP4_DEV_USER}:${TOKEN} oci:/home/student/DO288/labs/expose-registry/ubi-info docker://${INTERNAL_REGISTRY}/${RHT_OCP4_DEV_USER}-common2/ubi-info:1.0
+  637  oc get is
+  638  podman login -u ${RHT_OCP4_DEV_USER} -p ${TOKEN} ${INTERNAL_REGISTRY}
+  639  podman pull ${INTERNAL_REGISTRY}/${RHT_OCP4_DEV_USER}-common2/ubi-info:1.0
+  640  podman run --name info ${INTERNAL_REGISTRY}/${RHT_OCP4_DEV_USER}-common2/ubi-info:1.0
+  641  lab image-stream start
+  642  oc new-project ${RHT_OCP4_DEV_USER}-common-is
+  643  skopeo inspect docker://quay.io/redhattraining/hello-world-nginx
+  644  oc import-image hello-world --confirm --from quay.io/redhattraining/hello-world-nginx
+  645  oc get istag
+  646  oc describe is hello-world
+  647  oc new-project ${RHT_OCP4_DEV_USER}-image-stream
+  648  oc new-app --name hello -i ${RHT_OCP4_DEV_USER}-common-is/hello-world
+  649  oc get pod
+  650  oc expose svc hello
+  651  oc get route
+  652  curl \ hello-adbzrx-image-stream.apps.na46.prod.nextcle.com
+  653  curl hello-adbzrx-image-stream.apps.na46.prod.nextcle.com
+  654  curl -l hello-adbzrx-image-stream.apps.na46.prod.nextcle.com
+  655  curl -h hello-adbzrx-image-stream.apps.na46.prod.nextcle.com
+  656  curl -s hello-adbzrx-image-stream.apps.na46.prod.nextcle.com
+  657  curl -s http://hello-adbzrx-image-stream.apps.na46.prod.nextcle.com
+  658  curl http://hello-adbzrx-image-stream.apps.na46.prod.nextcle.com
+  659  curl https://hello-adbzrx-image-stream.apps.na46.prod.nextcle.com
+  660  curl http://hello-adbzrx-image-stream.apps.na46.prod.nextcle.com
+  661  ls
+  662  cd /
+  663  ls
+  664  tree etc
+  665  ls
+  666  cd lib
+  667  ls
+  668  echo $PATH
+  669  lab --help
+  670  cd ~
+  671  lab --help
+  672  lab
+  673  lab manage-build
+  674  lab manage-build start
+  675  lab manage-builds
+  676  find lab manage-builds
+  677  find "lab manage-builds"
+  678  find "lab"
+  679  cd /
+  680  find "lab"
+  681  find "lab manage-builds"
+  682  cd /home/student/.local/bin
+  683  ls -al
+  684  cd bib
+  685  cd bin
+  686  ls
+  687  ls l*
+  688  ls o*
+  689  echo $PATH
+  690  cd /usr/local/bin
+  691  ls
+  692  ll
+  693  lab --help
+  694  cat lab
+  695  lab --help
+  696  lab
+  697  lab --help
+  698  lab help
+  699  lab manage-builds
+  700  lab manage-builds -h
+  701  pwd
+  702  ../lib
+  703  cd ../lib
+  704  ls
+  705  ls -al
+  706  cat labtool.do288.shlib 
+  707  ls
+  708  cat labtool.do180.shlib 
+  709  cd ~
+  710  exit
+  711  lab openshift-s2i finish
+  712  lab deploy-image finish
+  713  lab build-template finish
+  714  lab container-build finish
+  715  ls
+  716  cd DO288-apps
+  717  git add .
+  718  git git commit -m "test add ."
+  719  git commit -m "test add ."
+  720  git push
+  721  cd ~
+  722  lab app-config finish
+  723  lab expose-registry finish
+  724  lab expose-image finish
+  725  lab image-stream finish
+  726  oc delete project adbzrx-common-is
+  727  history
+  728  history >history.txt
+  729  Cat /run/user/1000/containers/auth.json
+  730  cat /run/user/1000/containers/auth.json
+  731  cat /run/user/1001/containers/auth.json
+  732  cd /run/user/1000/containers
+  733  ls
+  734  cd ..
+  735  ls
+  736  cd ..
+  737  ls
+  738  lab manage-builds start
+  739  cd DO288-apps
+  740  git checkout main
+  741  git checkout -b manage-builds
+  742  git push -u origin manage-builds
+  743  cat /home/student/DO288-apps/java-serve/rhhoomset//sstrucd/e
+  744  nmta/iDnO/2j8a8v-aa/pcposm//jraevdah-aste/rtvrearihnoisntg//serxca/m
+  745  pmlaei/nj/ajvaavsae/rcvoemr/hroesdth/arte/sttr/a
+  746  iSneirnvge/reHxoasmtpElned/Pjoaivnats.ejravvearhost/rest/
+  747  ServerHostEndPoint.java
+  748  cat /home/student/DO288-apps/java-serverhost/src/
+  749  main/java/com/redhat/training/example/javaserverhost/rest/
+  750  cd /home/student/DO288-apps/java-serverhost/src/
+  751  cd main/java/com/redhat/training/example/javaserverhost/rest/
+  752  ls
+  753  cat ServerHostEndPoint.java 
+  754  source /usr/local/etc/ocp4.config
+  755  cd ~/DO288-apps
+  756  source /usr/local/etc/ocp4.config
+  757  oc login -u ${RHT_OCP4_DEV_USER} -p ${RHT_OCP4_DEV_PASSWORD} ${RHT_OCP4_MASTER_API}
+  758  oc new-project ${RHT_OCP4_DEV_USER}-manage-builds
+  759  oc new-app --name jhost --build-env MAVEN_MIRROR_URL=http://${RHT_OCP4_NEXUS_SERVER}/repository/java -i redhat-openjdk18-openshift:1.8 https://github.com/${RHT_OCP4_GITHUB_USER}/DO288-apps#manage-builds --context-dir java-serverhost
+  760  oc logs -f bc/jhost
+  761  oc logs -f bc/jhost >../bc.log
+  762  oc get pods
+  763  oc expose svc/jhost
+  764  oc get route
+  765  curl http://jhost-${RHT_OCP4_DEV_USER}-manage-builds.${RHT_OCP4_WILDCARD_DOMAIN}
+  766  oc get bc
+  767  oc get builds
+  768  cd /home/student/DO288-apps/java-serverhost/src/
+  769  source /usr/local/etc/ocp4.config
+  770  vi ServerHostEndPoint.java 
+  771  cd main/java/com/redhat/training/example/javaserverhost/rest/
+  772  cat ServerHostEndPoint.java 
+  773  vi ServerHostEndPoint.java 
+  774  git commit -a -m 'Update the version'
+  775  cd ~/DO288-apps
+  776  oc start-build bc/jhost
+  777  oc cancel-build bc/jhost
+  778  oc get builds
+  779  git push
+  780  oc start-build bc/jhost
+  781  oc get builds
+  782  oc logs -f build/jhost-3
+  783  oc logs -f build/jhost-3 >~/bc2.log
+  784  oc get pods
+  785  curl http://jhost-${RHT_OCP4_DEV_USER}-manage-builds.${RHT_OCP4_WILDCARD_DOMAIN}
+  786  cd /
+  787  ls
+  788  cd usr
+  789  ls
+  790  cd lib
+  791  ls
+  792  cd~
+  793  ls
+  794  cd ~
+  795  ls
+  796  cd DO288-aPPS
+  797  cd DO288-apps
+  798  cd /usr/local/lib
+  799  ls
+  800  cd ..
+  801  ls
+  802  cd lib64
+  803  ls
+  804  cd ../libexec
+  805  ls
+  806  cd src
+  807  cd ../src
+  808  ls
+  809  cd ../etc
+  810  ls
+  811  cat ocp4.conf
+  812  cat ocp4.config
+  813  cat ocp4.defaults 
+  814  cd ~
+  815  ls
+  816  ls -al
+  817  cat .bashrc
+  818  lab trigger-builds start
+  819  oc login -u ${RHT_OCP4_DEV_USER} -p ${RHT_OCP4_DEV_PASSWORD} ${RHT_OCP4_MASTER_API}
+  820  oc new-project ${RHT_OCP4_DEV_USER}-trigger-builds
+  821  podman login -u ${RHT_OCP4_QUAY_USER} quay.io
+  822  cd /home/student/DO288/labs/trigger-builds
+  823  ls
+  824  skopeo copy oci-archive:php-73-ubi8-original.tar.gz docker://quay.io/${RHT_OCP4_QUAY_USER}/php-73-ubi8:latest
+  825  oc create secret generic quay-registry --from-file .dockerconfigjson=${XDG_RUNTIME_DIR}/containers/auth.json --type kubernetes.io/dockerconfigjson
+  826  cd /usr/local
+  827  ls
+  828  cd ets
+  829  ls
+  830  cd etc
+  831  ls
+  832  cat ocp4.config 
+  833  oc secrets link builder quay-registry
+  834  oc import-image php --from quay.io/${RHT_OCP4_QUAY_USER}/php-73-ubi8 --confirm
+  835  ls
+  836  oc import-image php \
+  837  cd /home/student/DO288/labs/trigger-builds
+  838  oc new-app --name trigger php~http://github.com/${RHT_OCP4_GITHUB_USER}/DO288-apps --context-dir trigger-builds
+  839  oc logs -f bc/trigger
+  840  oc logs -f bc/trigger >~/triger.bc.log
+  841  oc get pods
+  842  oc describe bc/trigger | grep Triggered
+  843  skopeo copy oci-archive:php-73-ubi8-newer.tar.gz docker://quay.io/${RHT_OCP4_QUAY_USER}/php-73-ubi8:latest
+  844  oc import-image php >~/trigger-after.log
+  845  oc import-image php
+  846  oc get builds
+  847  oc describe build trigger-2 | grep cause
+  848  cd ~/DO288-apps
+  849  git push
+  850  git add .
+  851  git push
+  852  git add .
+  853  git commit
+  854  lab trigger-builds finish
+  855  lab post-commit start
+  856  oc login -u ${RHT_OCP4_DEV_USER} -p ${RHT_OCP4_DEV_PASSWORD} ${RHT_OCP4_MASTER_API}
+  857  oc project ${RHT_OCP4_DEV_USER}-post-commit
+  858  oc new-app --name hook --context-dir post-commit php:7.3~http://github.com/${RHT_OCP4_GITHUB_USER}/DO288-apps
+  859  oc logs -f bc/hook
+  860  oc get pods
+  861  cat ~/DO288/labs/post-commit/create-hook.sh
+  862  ~/DO288/labs/post-commit/create-hook.sh
+  863  oc describe bc/hook | grep Post
+  864  oc start-build bc/hook -F
+  865  oc get builds
+  866  oc set env bc/hook DEVELOPER="LILY JING"
+  867  oc set env bc/hook --list
+  868  oc start-build bc/hook -F
+  869  firefox $(oc get route/builds-for-managgggggggggggggggggers \
+  870  -o jsonpath='{.spec.host}') &
+  871  firefox $(oc get route/builds-for-managers \
+  872  -o jsonpath='{.spec.host}') &
+  873  oc delete project ${RHT_OCP4_DEV_USER}-post-commit
+  874  oc start-build bc/hook -F
+  875  oc project ${RHT_OCP4_DEV_USER}-post-commit
+  876  lab post-commit finish
+  877  ls
+  878  clear
+  879  lab s2i-scripts start
+  880  lab post-commit finish
+  881  lab s2i-scripts start
+  882  podman run --name test -it rhscl/httpd-24-rhel7 bash
+  883  git checkout main
+  884  cd s2iscripts/.s2i/bin
+  885  cd s2iscripts
+  886  ls -al
+  887  ls
+  888  cd s2i-scripts/
+  889  ls -al
+  890  cd .s2i/bin
+  891  ls
+  892  ll
+  893  cat assemble 
+  894  vi assemble 
+  895  cat run
+  896  oc login -u ${RHT_OCP4_DEV_USER} -p ${RHT_OCP4_DEV_PASSWORD} ${RHT_OCP4_MASTER_API}
+  897  oc new-project ${RHT_OCP4_DEV_USER}-s2i-scripts
+  898  oc new-app --name bonjour httpd:2.4~https://github.com/${RHT_OCP4_GITHUB_USER}/DO288-apps --context-dir s2i-scripts
+  899  oc status
+  900  oc logs -f bc/bonjour
+  901  oc expose svc bonjour
+  902  oc get pod
+  903  oc get route
+  904  curl bonjour-adbzrx-s2i-scripts.apps.na46.prod.nextcle.com
+  905  http://bonjour-${RHT_OCP4_DEV_USER}-s2i-scripts.${RHT_OCP4_WILDCARD_DOMAIN}/info.html
+  906  curl http://bonjour-adbzrx-s2i-scripts.apps.na46.prod.nextcle.com/info.html
+  907  oc logs deployment/bonjour
+  908  lab apache-s2i start
+  909  s2i version
+  910  s2i create s2i-do288-httpd s2i-do288-httpd
+  911  cd ~
+  912  ls
+  913  cd DO288-apps
+  914  cd ~
+  915  s2i create s2i-do288-httpd s2i-do288-httpd
+  916  tree s2i-do288-httpd
+  917  cat ~/DO288/labs/apache-s2i/Containerfile
+  918  rm -rf DO288-apps
+  919  git clone https://github.com/lilyjing2/DO288-apps
+  920  dir
+  921  lab apache-s2i start
+  922  s2i create s2i-do288-httpd s2i-do288-httpd
+  923  cat ~/DO288/labs/apache-s2i/Containerfile
+  924  cp ~/DO288/labs/apache-s2i/Containerfile
+  925  cp ~/DO288/labs/apache-s2i/Containerfile ~/s2i-do288-httpd/
+  926  cd ~/s2i-do288-httpd/
+  927  ls
+  928  cat Containerfile 
+  929  cd ~/DO288/labs/multicontainer-helm
+  930  ls
+  931  cd famouschart/
+  932  ls
+  933  cat values.yaml 
+  934  cat ../dependencies.yaml >> Chart.yaml
+  935  helm dependency update
+  936  cat ../mariadb.yaml >> values.yaml
+  937  cat ../env.yaml >> values.yaml
+  938  source /usr/local/etc/ocp4.config 
+  939  oc login -u ${RHT_OCP4_DEV_USER} -p ${RHT_OCP4_DEV_PASSWORD} ${RHT_OCP4_MASTER_API}
+  940  oc new-project ${RHT_OCP4_DEV_USER}-multicontainer-helm
+  941  helm install famousapp .
+  942  oc get deployments
+  943  oc get pods
+  944  oc expose service famousapp-famouschart
+  945  FAMOUS_URL=$(oc get route \
+  946  -n ${RHT_OCP4_DEV_USER}-multicontainer-helm famousapp-famouschart \
+  947  -o jsonpath='{.spec.host}'/random)
+  948  curl $FAMOUS_URL
+  949  lab multicontainer-kustomize start
+  950  cd ~/DO288/labs/multicontainer-kustomize
+  951  cat famous-quotes.yaml
+  952  mkdir famous-kustomize
+  953  cd famous-kustomize
+  954  mkdir base
+  955  cp ../famous-quotes.yaml base/deployment.yaml
+  956  cd base
+  957  ls
+  958  cat deployment.yaml 
+  959  oc login -u ${RHT_OCP4_DEV_USER} \
+  960  cd ..
+  961  oc new-project ${RHT_OCP4_DEV_USER}-multicontainer-kustomize
+  962  oc apply -k base
+  963  oc get deployments
+  964  oc expose service famousapp-famouschart
+  965  FAMOUS_URL=$(oc get route \
+  966  -n ${RHT_OCP4_DEV_USER}-multicontainer-kustomize famousapp-famouschart \
+  967  -o jsonpath='{.spec.host}'/random)
+  968  curl $FAMOUS_URL
+  969  oc get pods
+  970  cd ~
+  971  lab multicontainer-helm finish
+  972  lab multicontainer-kustomize finish
+  973  oc login -u ${RHT_OCP4_DEV_USER} -p ${RHT_OCP4_DEV_PASSWORD} ${RHT_OCP4_MASTER_API}
+  974  cd ~/DO288/labs/multicontainer-kustomize
+  975  ls
+  976  cd famous-kustomize/
+  977  ls
+  978  oc new-project ${RHT_OCP4_DEV_USER}-multicontainer-kustomize
+  979  oc apply -k base
+  980  oc get deployments
+  981  oc expose service famousapp-famouschart
+  982  cd ~
+  983  lab multicontainer-review start
+  984  cd ~/DO288/labs/multicontainer-review
+  985  helm create exochart
+  986  cd exochart
+  987  ls
+  988  vi values.yaml 
+  989  vi Chart.yamly
+  990  ls
+  991  cat Chart.yaml 
+  992  vi Chart.yaml 
+  993  cat Chart.yaml 
+  994  HELM DEPENDENCY UPDATE
+  995  helm dependency update
+  996  vi Chart.yaml 
+  997  - NAME: COCKROACHDB
+  998  ls
+  999  cd ~/DO288/labs/multicontainer-review
+ 1000  cd exochart
+ 1001  cat Chart.yaml
+ 1002  vi Chart.yaml
+ 1003  cat Chart.yaml
+ 1004  sudo vi Chart.yaml
+ 1005  cat Chart.yaml
+ 1006  helm dependency update
+ 1007  sudo vi Chart.yaml
+ 1008  helm dependency update
+ 1009  cd~
+ 1010  cd ~
+ 1011  lab probes start
+ 1012  oc login -u ${RHT_OCP4_DEV_USER} -p ${RHT_OCP4_DEV_PASSWORD} ${RHT_OCP4_MASTER_API}
+ 1013  oc new-project ${RHT_OCP4_DEV_USER}-probes
+ 1014  oc new-app --name probes --context-dir probes --build-env npm_config_registry=http://${RHT_OCP4_NEXUS_SERVER}/repository/nodejs nodejs:12~https://github.com/${RHT_OCP4_GITHUB_USER}/DO288-apps
+ 1015  oc status
+ 1016  oc logs -f bc/probes
+ 1017  oc get pods
+ 1018  oc expose svc probes
+ 1019  curl -i probes-${RHT_OCP4_DEV_USER}-probes.${RHT_OCP4_WILDCARD_DOMAIN}/ready
+ 1020  curl probes-${RHT_OCP4_DEV_USER}-probes.${RHT_OCP4_WILDCARD_DOMAIN}
+ 1021  oc set probe deployment probes --liveness --get-url=http://:8080/healthz --initial-delay-seconds=2 --timeout-seconds=2
+ 1022  oc set probe deployment probes --readiness --get-url=http://:8080/ready --initial-delay-seconds=2 --timeout-seconds=2
+ 1023  oc describe deployment probes | grep -iA 1 liveness
+ 1024  oc get pods
+ 1025  POD=$(oc get pods -o name | grep -v build)
+ 1026  oc logs -f $POD
+ 1027  ~/DO288/labs/probes/not-ready.sh
+ 1028  oc logs -f $POD
+ 1029  oc get pods
+ 1030  curl -is probes-${RHT_OCP4_DEV_USER}-probes.${RHT_OCP4_WILDCARD_DOMAIN} | grep 'HTTP/1.0'
+ 1031  POD=$(oc get pods -o name | grep -v build)
+ 1032  oc describe $POD
+ 1033  oc get pods
+ 1034  curl -is probes-${RHT_OCP4_DEV_USER}-probes.${RHT_OCP4_WILDCARD_DOMAIN} | grep 'HTTP/1.0'
+ 1035  cat ~/DO288/labs/probes/not-ready.sh
+ 1036  cd  ~/DO288/labs/probes
+ 1037  ls
+ 1038  cat oc-new-app.sh 
+ 1039  lab strategy start
+ 1040  oc login -u ${RHT_OCP4_DEV_USER} -p ${RHT_OCP4_DEV_PASSWORD} ${RHT_OCP4_MASTER_API}
+ 1041  oc new-app --as-deployment-config --name mysql -e MYSQL_USER=test -e MYSQL_PASSWORD=redhat -e MYSQL_DATABASE=testdb -e MYSQL_AIO=0 --docker-image registry.redhat.io/rhel8/mysql-80
+ 1042  oc get pods
+ 1043  oc describe dc/mysql | grep -i strategy:
+ 1044  oc set triggers dc/mysql --from-config --remove
+ 1045  oc patch dc/mysql --patch '{"spec":{"strategy":{"type":"Recreate"}}}'
+ 1046  oc patch dc/mysql --type=json -p='[{"op":"remove", "path": "/spec/strategy/rollingParams"}]'
+ 1047  cat ~/DO288/labs/strategy/users.sql
+ 1048  cat ~/DO288/labs/strategy/import.sh
+ 1049  cat ~/DO288/labs/strategy/post-hook.sh
+ 1050  ~/DO288/labs/strategy/post-hook.sh
+ 1051  oc describe dc/mysql | grep -iA 3 'strategy:'
+ 1052  oc rollout latest dc/mysql
+ 1053  watch -n 2 oc get pods
+ 1054  oc logs mysql-2-hook-post
+ 1055  oc set env dc/mysql HOOK_RETRIES=5
+ 1056  oc rollout latest dc/mysql
+ 1057  watch -n 2 oc get pods
+ 1058  oc logs -f mysql-3-hook-post
+ 1059  watch -n 2 oc get pods
+ 1060  oc logs -f mysql-3-hook-post
+ 1061  watch -n 2 oc get pods
+ 1062  oc logs -f mysql-3-hook-post
+ 1063  watch -n 2 oc get pods
+ 1064  oc logs -f mysql-3-hook-post
+ 1065  oc get pods
+ 1066  oc rsh mysql-1-rqkqr
+ 1067  watch -n 2 oc get pods
+ 1068  oc rollout history dc mysql
+ 1069* 
+ 1070  oc rollout history dc mysql
+ 1071  oc rollout dc/name
+ 1072  oc rollout dc mysql
+ 1073  oc rollout dc/mysql
+ 1074  oc rollout mysql
+ 1075  oc rollout dc/mysql
+ 1076  oc rollback dc/mysql
+ 1077  oc logs -f mysql-3-hook-post
+ 1078  watch -n 2 oc get pods
+ 1079  oc logs -f mysql-3-hook-post
+ 1080  oc rollout history dc mysql
+ 1081  watch -n 2 oc get pods
+ 1082  oc project
+ 1083  history
+ 1084  oc get pods
+ 1085  oc logs mysql-4-hook-post
+ 1086  oc set env dc mysql --list
+ 1087  oc set env dc/mysql HOOK_RETRIES=5
+ 1088  oc set env dc mysql --list
+ 1089  oc get pods
+ 1090  oc rollout latest dc mysql
+ 1091  oc rollout latest dc/mysql
+ 1092  oc get pods
+ 1093  watch oc get pods
+ 1094  oc describe dc mysql
+ 1095  oc get ev
+ 1096  oc get pods
+ 1097  oc delete all -l app=mysql
+ 1098  oc delete all -l app=probes
+ 1099  cd
+ 1100  tree DO288
+ 1101  lab strategy finish
+ 1102  lab strategy start
+ 1103  oc project
+ 1104  history
+ 1105  history >~/probes.log
+ 1106  oc new-app --name probes --context-dir probes --build-env npm_config_registry=http://${RHT_OCP4_NEXUS_SERVER}/repository/nodejs nodejs:12~https://github.com/${RHT_OCP4_GITHUB_USER}/DO288-apps
+ 1107  oc get pods
+ 1108  oc logs -f bc/probes
+ 1109  oc get pods
+ 1110  oc expose svc probes
+ 1111  curl -i probes-${RHT_OCP4_DEV_USER}-probes.${RHT_OCP4_WILDCARD_DOMAIN}/ready
+ 1112  curl -i probes-${RHT_OCP4_DEV_USER}-probes.${RHT_OCP4_WILDCARD_DOMAIN}/healthz
+ 1113  curl probes-${RHT_OCP4_DEV_USER}-probes.${RHT_OCP4_WILDCARD_DOMAIN}
+ 1114  oc set probe deployment probes --liveness --get-url=http://:8080/healthz --initial-delay-seconds=2 --timeout-seconds=2
+ 1115  oc set probe deployment probes --readiness --get-url=http://:8080/ready --initial-delay-seconds=2 --timeout-seconds=2
+ 1116  oc describe deployment probes | grep -iA 1 liveness
+ 1117  oc get pods
+ 1118  POD=$(oc get pods -o name | grep -v build)
+ 1119  oc logs -f $POD
+ 1120  ~/DO288/labs/probes/kill.sh
+ 1121  cat ~/DO288/labs/probes/kill.sh
+ 1122  oc logs -f $POD
+ 1123  oc get pods
+ 1124  POD=$(oc get pods -o name | grep -v build)
+ 1125  oc logs -f $POD
+ 1126  ~/DO288/labs/probes/not-ready.sh
+ 1127  cat ~/DO288/labs/probes/not-ready.sh
+ 1128  oc logs -f $POD
+ 1129  oc get pods
+ 1130  oc logs -f $POD
+ 1131  curl -is probes-${RHT_OCP4_DEV_USER}-probes.${RHT_OCP4_WILDCARD_DOMAIN} | grep 'HTTP/1.0'
+ 1132  POD=$(oc get pods -o name | grep -v build)
+ 1133  oc describe $POD
+ 1134  oc delete project ${RHT_OCP4_DEV_USER}-probes
+ 1135  lab probes finish
+ 1136  lab strategy start
+ 1137  oc new-project ${RHT_OCP4_DEV_USER}-strategy
+ 1138  oc new-app --as-deployment-config --name mysql -e MYSQL_USER=test -e MYSQL_PASSWORD=redhat -e MYSQL_DATABASE=testdb -e MYSQL_AIO=0 --docker-image registry.redhat.io/rhel8/mysql-80
+ 1139  oc get pods
+ 1140  oc describe dc/mysql | grep -i strategy:
+ 1141  oc set triggers dc/mysql --from-config --remove
+ 1142  oc patch dc/mysql --patch '{"spec":{"strategy":{"type":"Recreate"}}}'
+ 1143  cat ~/DO288/labs/strategy/rmrolling.sh
+ 1144  cat ~/DO288/labs/strategy/rm-rolling.sh
+ 1145   ~/DO288/labs/strategy/rm-rolling.sh
+ 1146  cat ~/DO288/labs/strategy/post-hook.sh
+ 1147  ~/DO288/labs/strategy/post-hook.sh
+ 1148  oc describe dc/mysql | grep -iA 3 'strategy:'
+ 1149  oc rollout latest dc/mysql
+ 1150  watch -n 2 oc get pods
+ 1151  oc logs mysql-2-hook-post
+ 1152  oc set env dc/mysql HOOK_RETRIES=5
+ 1153  oc get pods
+ 1154  oc set env dc mysql --list
+ 1155  oc rollout latest dc/mysql
+ 1156  watch -n 2 oc get pods
+ 1157  oc logs -f mysql-3-hook-post
+ 1158  oc get pods
+ 1159  oc logs -f mysql-3-hook-post
+ 1160  oc get pods
+ 1161  oc rsh mysql-3-sjgxr 
+ 1162  lab app-deploy start
+ 1163  cd DO288-apps
+ 1164  git checkout main
+ 1165  git checkout -b app-deploy
+ 1166  git push -u origin app-deploy
+ 1167  cat ~/DO288-apps/quip/src/main/java/com/redhat/training/
+ 1168  cat ~/DO288-apps/quip/src/main/java/com/redhat/training/example/Quip.java 
+ 1169  oc login -u ${RHT_OCP4_DEV_USER} -p ${RHT_OCP4_DEV_PASSWORD} ${RHT_OCP4_MASTER_API}
+ 1170  oc new-project ${RHT_OCP4_DEV_USER}-app-deploy
+ 1171  oc new-app --as-deployment-config --name quip --build-env MAVEN_MIRROR_URL=http://${RHT_OCP4_NEXUS_SERVER}/repository/java -i redhat-openjdk18-openshift:1.5 --context-dir quip https://github.com/${RHT_OCP4_GITHUB_USER}/DO288-apps#app-deploy
+ 1172  oc logs -f bc/quip
+ 1173  oc get pods
+ 1174  oc logs quip-1-mhnl7 
+ 1175  oc describe svc/quip
+ 1176  oc expose svc quip
+ 1177  curl http://quip-${RHT_OCP4_DEV_USER}-app-deploy${RHT_OCP4_WILDCARD_DOMAIN}
+ 1178  curl http://quip-${RHT_OCP4_DEV_USER}-app-deploy.${RHT_OCP4_WILDCARD_DOMAIN}
+ 1179  oc set probe dc/quip --liveness --readiness --get-url=http://:8080/ready --initial-delay-seconds=30 --timeout-seconds=2
+ 1180  oc describe dc/quip | grep http-get
+ 1181  oc get pods
+ 1182  oc describe pod quip-2-lljgx | grep http-get
+ 1183  curl http://quip-${RHT_OCP4_DEV_USER}-app-deploy.${RHT_OCP4_WILDCARD_DOMAIN}
+ 1184  cat ~/DO288/labs/app-deploy/app-change.sh
+ 1185  ~/DO288/labs/app-deploy/app-change.sh
+ 1186  oc start-build quip -F
+ 1187  oc get pods
+ 1188  curl http://quip-${RHT_OCP4_DEV_USER}-app-deploy.${RHT_OCP4_WILDCARD_DOMAIN}
+ 1189  oc get pods
+ 1190  curl http://quip-${RHT_OCP4_DEV_USER}-app-deploy.${RHT_OCP4_WILDCARD_DOMAIN}
+ 1191  oc rollback dc/quip
+ 1192  oc get pods
+ 1193  curl http://quip-${RHT_OCP4_DEV_USER}-app-deploy.${RHT_OCP4_WILDCARD_DOMAIN}
+ 1194  oc get pods
+ 1195  curl http://quip-${RHT_OCP4_DEV_USER}-app-deploy.${RHT_OCP4_WILDCARD_DOMAIN}
+ 1196  oc get svc
+ 1197  lab external-service start
+ 1198  oc login -u ${RHT_OCP4_DEV_USER} -p ${RHT_OCP4_DEV_PASSWORD} ${RHT_OCP4_MASTER_API}
+ 1199  oc project ${RHT_OCP4_DEV_USER}-external-service
+ 1200  oc status
+ 1201  oc get pods
+ 1202  oc rsh todoapp-1-6z6qg env | grep DATABASE
+ 1203  oc rsh todoapp-1-nwbsk env | grep DATABASE
+ 1204  HOSTNAME=$(oc get route todoapp \
+-o jsonpath='{.spec.host}')
+ 1205  echo ${HOSTNAME}
+ 1206  curl -si http://${HOSTNAME}/todo/api/items/6
+ 1207  dbhost=$(echo \
+mysql.ocp-${RHT_OCP4_WILDCARD_DOMAIN#"apps."})
+ 1208  echo $dbhost
+ 1209  mysqlshow -h${dbhost} -utodoapp -predhat123 todo
+ 1210  oc create svc externalname tododb --external-name ${dbhost}
+ 1211  curl -si http://${HOSTNAME}/todo/api/items/6
+
+-- micro-Java
+ 1212  lab micro-java start
+ 1213  oc login -u ${RHT_OCP4_DEV_USER} -p ${RHT_OCP4_DEV_PASSWORD} ${RHT_OCP4_MASTER_API}
+ 1214  oc new-project ${RHT_OCP4_DEV_USER}-micro-java
+ 1215  cd ~/DO288-apps/micro-java
+ 1216  git checkout main
+ 1217  git checkout -b micro-config
+ 1218  git push -u origin micro-config
+ 1228  mvn -DskipTests package oc:build oc:resource
+ 1229  oc status
+ 1230  oc get pods -w
+ 1231  ROUTE_URL=$(oc get route micro-java --template='{{.spec.host}}')
+ 1232  curl ${ROUTE_URL}/api/hello
+ 1233  oc get route
+ 1234  oc get pods
+ 1237  oc status
+ 1238  oc get all
+ 1239  oc get svc
+ 1240  mvn -DskipTests oc:deploy
+ 1241  cat src/main/jkube/deployment.yml
+ 1242  mvn -DskipTests oc:deploy
+ 1243  mvn -DskipTests package oc:build oc:resource
+ 1244  mvn -DskipTests oc:deploy
+ 1245  oc status
+ 1246  oc get pods
+ 1247  ROUTE_URL=$(oc get route micro-java --template='{{.spec.host}}')
+ 1248  curl ${ROUTE_URL}/api/hello
+ 1249  git add src/main/jkube/*.yml
+ 1250  git commit -am "Add YAML fragments."
+ 1251  git push
+ 1252  mvn -DskipTests package oc:build oc:resource
+ 1253  oc get cm/configmap-hello
+ 1254  oc get pods -w
+ 1255  curl ${ROUTE_URL}/api/hello
+ 1256  mvn -DskipTests oc:deploy
+ 1257  curl ${ROUTE_URL}/api/hello
+ 1260  history >~/DO288-apps/micro-java/cm.txt
